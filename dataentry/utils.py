@@ -1,5 +1,10 @@
 from typing import List
 from django.apps import apps
+from django.core.management import CommandError
+import csv
+from django.db import DataError
+from django.core.mail import EmailMessage
+from django.conf import settings
 
 
 def get_all_custom_models():
@@ -13,3 +18,46 @@ def get_all_custom_models():
             custom_models.append(model_string)
             
     return custom_models
+
+
+
+def check_csv_errors(file_path, model_name):
+
+    # searching for the model name in all of the istalled apps
+    model = None
+    for app_config in apps.get_app_configs():
+        try :
+            model = apps.get_model(app_config.label, model_name)
+            break # stop searching once the model is found
+        except LookupError:
+            continue # continue searching in next app
+
+    if not model:
+        raise CommandError(f'Model {model_name} not found in any app')
+
+     # get all the field names of the model that we found
+    model_fields = [field.name for field in model._meta.fields if  field.name !='id']
+
+    try:
+        with open(file_path, 'r') as file:
+            reader = csv.DictReader(file)
+            csv_header =  reader.fieldnames # list of the first row of the csv as the header/field names
+        
+            # compare csv header with model's field names
+            if csv_header != model_fields:
+                raise DataError(f"CSV File doesn't match with the {model_name} table fields")
+    except Exception as e:
+        raise e
+
+    return model
+
+
+
+def send_email_notification(mail_subject, message, to_email ):
+    try:
+        from_email =  settings.DEFAULT_FROM_EMAIL
+         # Create the email object and SEND it
+        email = EmailMessage(mail_subject, message, from_email, to=[to_email])
+        email.send()
+    except Exception as e:
+        raise e

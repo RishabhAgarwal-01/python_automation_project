@@ -11,6 +11,12 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+# Load the hidden variables from the .env file
+load_dotenv()
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,10 +26,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%em2st4$n4r_z5rv6x&)@8o2qr1hp90+l8uk56#bhb9(m^v9c4'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -119,7 +125,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATICFILES_DIRS = [
+    'awd_main/static/',
+]
+# The destination folder where collectstatic copies all files
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -138,6 +148,31 @@ MEDIA_ROOT = BASE_DIR/'media'
 from django.contrib.messages import constants as messages
 
 MESSAGE_TAGS = {
-    messages.INFO: "danger",
+    messages.ERROR: "danger",
     50: "critical",
 }
+
+
+# CELERY SETTINGS
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+
+
+# EMAIL Configuration
+# The modern Django 6 way to configure emails
+# settings.py
+MAILERS = {
+    "default": {
+        "BACKEND": "django.core.mail.backends.smtp.EmailBackend",
+        "OPTIONS": {
+            "host": "smtp.gmail.com",
+            "port": 587,
+            "username": os.environ.get("EMAIL_HOST_USER"),
+            "password": os.environ.get("EMAIL_HOST_PASSWORD"),
+            "use_tls": True,
+        }
+    }
+}
+
+# This setting stays outside the MAILERS dictionary
+DEFAULT_FROM_EMAIL = f"Automate with Django <{os.environ.get('EMAIL_HOST_USER')}>"
+DEFAULT_TO_EMAIL = "arishabh711@gmail.com"

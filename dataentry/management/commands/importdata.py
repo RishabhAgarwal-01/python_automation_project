@@ -3,6 +3,7 @@ from django.core.management import BaseCommand, CommandError
 from django.apps import apps
 from django.db import DataError
 import csv
+from dataentry.utils import check_csv_errors
 
 # proposed command -> python manage.py importdata file_path model_name
 class Command(BaseCommand):
@@ -19,32 +20,28 @@ class Command(BaseCommand):
         file_path = kwargs['file_path']
         model_name = kwargs['model_name'].capitalize()
 
-        # searching for the model name in all of the istalled apps
-        model = None
-        for app_config in apps.get_app_configs():
-            try :
-                model = apps.get_model(app_config.label, model_name)
-                break # stop searching once the model is found
-            except LookupError:
-                continue # continue searching in next app
+        # utils.py check for the csv error before execution of the creating the records in the models
+        # the check_csv_errors return a model which we got after searching through all installed apps
+        model = check_csv_errors(file_path, model_name)
 
-        if not model:
-            raise CommandError(f'Model {model_name} not found in any app')
-
-        # get all the field names of the model that we found
-        model_fields = [field.name for field in model._meta.fields if  field.name != 'id']
-        
-
-
+        # read the file, take every record and create it 
         with open(file_path, 'r') as file:
             reader = csv.DictReader(file)
-            csv_header =  reader.fieldnames # list of the first row of the csv as the header
 
-            # compare csv header with model's field names
-            if csv_header != model_fields:
-                raise DataError(f"CSV File doesn't match with the {model_name} table fields")
+            # batching 
+            batch_size = 5000 
+            records = []
 
             for row in reader:
-                model.objects.create(**row)
+                # Use model(**row) to prep the record without saving it to the DB yet
+                records.append(model(**row))
+                
+                # When we hit 5,000 records, do one massive database insert
+                if len(records) >= batch_size:
+                    model.objects.bulk_create(records)
+                    records = [] # Clear the list to free up your laptop's RAM
+
+            if records:
+                model.objects.bulk_create(records)
         
         self.stdout.write(self.style.SUCCESS("Data imported from CSV successfully"))
