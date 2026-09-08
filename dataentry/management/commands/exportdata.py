@@ -3,6 +3,7 @@ from django.core.management import BaseCommand, CommandError
 # from  dataentry.models import Student
 import datetime
 from django.apps import apps
+from dataentry.utils import generate_csv_file
 
 
 # proposed command -> python manage.py exportdata model_name
@@ -32,11 +33,7 @@ class Command(BaseCommand):
         # fetch the data from database
         data = model.objects.all()
 
-        # generate the timestamp of current date and time
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-
-        # define the csv file name or path
-        file_path = f'exported_{model_name}_data_{timestamp}.csv'
+        file_path = generate_csv_file(model_name)
 
         # open the csv file and write the data
         with open(file_path, 'w', newline='') as file:

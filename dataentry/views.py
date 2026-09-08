@@ -6,7 +6,8 @@ from django.contrib import messages
 from dataentry.utils import get_all_custom_models, check_csv_errors
 from uploads.models import Upload
 from django.conf import settings
-from .tasks import import_data_task
+from .tasks import export_data_task, import_data_task
+from django.core.management import call_command
 
 
 def import_data(request):
@@ -46,3 +47,26 @@ def import_data(request):
             'model_list': all_models
         }
         return render(request, 'dataentry/importdata.html', context)
+
+
+
+
+def export_data(request):
+
+    if request.method == "POST":
+        model_name = request.POST.get('model_name')
+
+        # handle the export data task here handled by celery task in tasks.py
+        export_data_task.delay(model_name)
+        # show message to the user
+        messages.success(request, "Your data is being exported, you will be notified once it is done.")
+        return redirect('export_data')
+    
+    else:
+        # Only handle GET requests here
+        all_models = get_all_custom_models()
+        context = {
+            'model_list': all_models
+        }
+    
+    return render(request,'dataentry/exportdata.html', context)
