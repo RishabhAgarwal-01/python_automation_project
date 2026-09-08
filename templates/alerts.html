@@ -1,7 +1,55 @@
-{% if messages %}
+<!-- {% if messages %}
 <div class="messages" id="messages">
     {% for message in messages %}
     <div{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</div>
     {% endfor %}
 </div>
+{% endif %} -->
+
+
+
+{% if messages %}
+<div class="messages-container" id="messages">
+    {% for message in messages %}
+        
+        <!-- 
+          Map Django's 'error' tag to Bootstrap's 'danger' class.
+          Also added 'alert-dismissible' and shadow for a modern look.
+        -->
+        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm d-flex align-items-center" role="alert">
+            
+            <!-- Dynamic Icons based on the message type -->
+            {% if message.tags == 'success' %}
+                <i class="bi bi-check-circle-fill me-2 fs-5"></i>
+            {% elif message.tags == 'error' or message.tags == 'danger' %}
+                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+            {% elif message.tags == 'warning' %}
+                <i class="bi bi-exclamation-circle-fill me-2 fs-5"></i>
+            {% else %}
+                <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+            {% endif %}
+
+            <!-- The actual message -->
+            <div>
+                {{ message }}
+            </div>
+            
+            <!-- Close (X) Button -->
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+
+    {% endfor %}
+</div>
+
+<!-- Auto-dismiss script: Removes the alert smoothly after 4 seconds -->
+<script>
+    setTimeout(function() {
+        let messages = document.querySelectorAll('#messages .alert');
+        messages.forEach(function(messageElement) {
+            // Using Bootstrap's built-in alert closing instance
+            let alert = new bootstrap.Alert(messageElement);
+            alert.close();
+        });
+    }, 4000);
+</script>
 {% endif %}

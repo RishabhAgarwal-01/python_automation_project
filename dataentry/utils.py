@@ -9,6 +9,7 @@ import datetime
 import os
 
 
+
 def get_all_custom_models():
     excluded_apps = {'admin', 'auth', 'contenttypes', 'sessions', 'messages', 'authtoken', 'uploads'}
     custom_models = []
@@ -20,6 +21,7 @@ def get_all_custom_models():
             custom_models.append(model_string)
             
     return custom_models
+
 
 
 
@@ -52,6 +54,7 @@ def check_csv_errors(file_path, model_name):
         raise e
 
     return model
+
 
 
 

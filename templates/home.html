@@ -1,16 +1,135 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <title>Automation with Django</title>
-</head>
-<body>
-    <h1>Home Page</h1>
-    <br>
-    <a href="{% url 'import_data'  %}">Import Data</a>
-    <a href="{% url 'export_data'  %}">Export Data</a>
+{% extends 'base.html' %}
 
-</body>
-</html>
+{% block content %}
+<style>
+    /* Card structural styles */
+    .feature-card {
+        border: none;
+        border-radius: 12px; /* Slightly rounder for a modern look */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        text-decoration: none;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .feature-card:hover, .feature-card:focus {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 20px rgba(0,0,0,0.1);
+        outline: none;
+    }
+
+    .card-title-box {
+        padding: 20px 24px;
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        border-bottom: 1px solid rgba(0,0,0,0.04);
+        letter-spacing: -0.3px;
+    }
+
+    .card-desc-box {
+        padding: 20px 24px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        flex-grow: 1; 
+    }
+
+    /* Refined Pastel Color Palettes */
+    .card-blue .card-title-box { background-color: #d1e2fc; color: #174ea6; }
+    .card-blue .card-desc-box { background-color: #e8f0fe; color: #174ea6; }
+    
+    .card-green .card-title-box { background-color: #ceead6; color: #0d652d; }
+    .card-green .card-desc-box { background-color: #e6f4ea; color: #0d652d; }
+    
+    .card-pink .card-title-box { background-color: #fad2cf; color: #a50e0e; }
+    .card-pink .card-desc-box { background-color: #fce8e6; color: #a50e0e; }
+    
+    .card-yellow .card-title-box { background-color: #feefc3; color: #b06000; }
+    .card-yellow .card-desc-box { background-color: #fef7e0; color: #b06000; }
+    
+    /* Hero Subtitle */
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: #6c757d;
+        max-width: 650px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="container mb-5">
+    
+    <!-- Alerts Section -->
+    <div class="row mb-3">
+        <div class="col-12">
+            {% include 'alerts.html' %}
+        </div>
+    </div>
+
+    <!-- Upgraded Hero Section -->
+    <div class="text-center mb-5 pb-3 pt-2">
+        <h1 class="fw-bold text-dark mb-3" style="font-weight: 800; letter-spacing: -1px; font-size: 2.8rem;">
+            Automate The Boring Stuff With <span class="text-primary">Django</span>
+        </h1>
+        <p class="hero-subtitle">
+            A powerful toolkit to streamline your workflows. Import datasets, manage bulk emails, compress media, and scrape web data—all from one unified dashboard.
+        </p>
+    </div>
+
+    <!-- Grid Layout -->
+    <div class="row g-4 mb-5">
+        
+        <!-- Import Data -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'import_data' %}" class="feature-card card-blue" aria-label="Import Data">
+                <h3 class="card-title-box">Import Data</h3>
+                <div class="card-desc-box">Upload CSV files and seamlessly map data directly into your relational database tables.</div>
+            </a>
+        </div>
+
+        <!-- Export Data -->
+        <div class="col-md-6 col-lg-4">
+            <a href="{% url 'export_data' %}" class="feature-card card-green" aria-label="Export Data">
+                <h3 class="card-title-box">Export Data</h3>
+                <div class="card-desc-box">Generate clean, structured CSV exports from any specific database model instantly.</div>
+            </a>
+        </div>
+
+        <!-- Bulk Emails -->
+        <div class="col-md-6 col-lg-4">
+            <a href="#" class="feature-card card-pink" aria-label="Bulk Emails">
+                <h3 class="card-title-box">Bulk Emails</h3>
+                <div class="card-desc-box">Create, schedule, and dispatch mass email campaigns to your user base effortlessly.</div>
+            </a>
+        </div>
+
+        <!-- Email Tracking -->
+        <div class="col-md-6 col-lg-4">
+            <a href="#" class="feature-card card-yellow" aria-label="Email Tracking">
+                <h3 class="card-title-box">Email Tracking</h3>
+                <div class="card-desc-box">Monitor campaign engagement with real-time analytics for open rates and link clicks.</div>
+            </a>
+        </div>
+
+        <!-- Compress Images -->
+        <div class="col-md-6 col-lg-4">
+            <a href="#" class="feature-card card-pink" aria-label="Compress Images">
+                <h3 class="card-title-box">Compress Images</h3>
+                <div class="card-desc-box">Optimize and reduce high-resolution image file sizes without sacrificing visual quality.</div>
+            </a>
+        </div>
+
+        <!-- Web Scraping -->
+        <div class="col-md-6 col-lg-4">
+            <a href="#" class="feature-card card-yellow" aria-label="Web Scraping">
+                <h3 class="card-title-box">Web Scraping</h3>
+                <div class="card-desc-box">Automate data extraction from target websites and store valuable analytical insights.</div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

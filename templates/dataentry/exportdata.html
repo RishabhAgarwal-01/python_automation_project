@@ -1,20 +1,65 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Export Data</title>
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
 
-    <!-- Bootstrap 5 CSS CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="{% static 'js/custom.js' %}"></script>
-</head>
+            <!-- Alerts Section -->
+            {% include 'alerts.html' %}
 
-<body class="bg-light">
+            <!-- Modern Card Design -->
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                
+                <div class="card-body p-5 bg-white" style="border-radius: 12px;">
+                    
+                    <!-- Clean Header with Icon (Green theme for Export) -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle mb-3" style="width: 60px; height: 60px;">
+                            <i class="bi bi-cloud-arrow-down fs-2"></i>
+                        </div>
+                        <h3 class="fw-bold text-dark">Export Database Records</h3>
+                        <p class="text-muted small">Download data from your tables as a structured CSV file.</p>
+                    </div>
+                    
+                    <form action="{% url 'export_data' %}" method="POST">
+                        {% csrf_token %}
 
+                        <!-- Model Selection Field -->
+                        <div class="mb-4">
+                            <label for="model_name" class="form-label fw-semibold text-secondary">
+                                <i class="bi bi-table me-1"></i> Target Database Table
+                            </label>
+                            <select name="model_name" id="model_name" class="form-select form-select-lg bg-light border-0" required>
+                                <option value="" disabled selected>-- Select a Table --</option>
+                                {% for model in model_list %}
+                                    <option value="{{ model }}">{{ model }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 mt-5">
+                            <a href="{% url 'home' %}" class="btn btn-light btn-lg flex-fill fw-semibold text-secondary shadow-sm">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg flex-fill fw-bold shadow-sm">
+                                Start Export
+                            </button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ==========================================
+     OLD CODE BACKUP (Safe to delete anytime) 
+     ========================================== -->
+{% comment %}
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
@@ -58,6 +103,6 @@
 
     <!-- Bootstrap 5 JS Bundle (Includes Popper for dropdowns/tooltips) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+{% endcomment %}
 
-</html>
+{% endblock %}
