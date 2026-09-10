@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            
+            <!-- Shows our success or error messages -->
+            {% include 'alerts.html' %}
+            
+            <!-- Modern Card Design (Reduced padding from p-5 to p-4) -->
+            <div class="card shadow-sm border-0" style="border-radius: 12px;">
+                <div class="card-body p-4 bg-white" style="border-radius: 12px;">
+                    
+                    <!-- Compact Header -->
+                    <div class="text-center mb-3">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-2" style="width: 48px; height: 48px;">
+                            <i class="bi bi-person-plus fs-3"></i>
+                        </div>
+                        <h4 class="fw-bold text-dark mb-1">Create an Account</h4>
+                        <p class="text-muted small mb-0">Join to automate your workflows.</p>
+                    </div>
+                    
+                    <form action="{% url 'register' %}" method="POST">
+                        {% csrf_token %}
+                        
+                        <div class="django-form mb-3">
+                            {{ form.as_p }}
+                        </div>
+                        
+                        <!-- Removed btn-lg to make the button standard height -->
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm">
+                            Register Account
+                        </button>
+                    </form>
+                    
+                    <div class="text-center mt-3 pt-3 border-top">
+                        <p class="text-muted small mb-0">Already have an account? <a href="{% url 'login' %}" class="text-primary text-decoration-none fw-medium">Log in</a></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Compact CSS Adjustments -->
+<style>
+    /* Tighter spacing between form paragraphs */
+    .django-form p {
+        margin-bottom: 0.75rem; 
+    }
+    
+    /* Slightly smaller labels */
+    .django-form label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 0.2rem;
+        display: block;
+        font-size: 0.9rem;
+    }
+    
+    /* Shorter input fields */
+    .django-form input {
+        width: 100%;
+        padding: 0.4rem 0.75rem; /* Reduced padding */
+        font-size: 0.95rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.4rem;
+        background-color: #f8f9fa;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+    
+    .django-form input:focus {
+        outline: 0;
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        background-color: #fff;
+    }
+    
+    /* Highly compressed help text (fixes the massive Django password rules block) */
+    .django-form .helptext {
+        font-size: 0.7rem;
+        color: #6c757d;
+        display: block;
+        margin-top: 0.2rem;
+        line-height: 1.1; /* Squeezes the lines of text together */
+    }
+    
+    /* Compact error lists */
+    .django-form .errorlist {
+        color: #dc3545;
+        list-style-type: none;
+        padding-left: 0;
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
