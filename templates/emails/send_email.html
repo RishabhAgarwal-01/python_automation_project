@@ -1,0 +1,19 @@
+{% extends 'base.html'  %}
+
+{% block content %}
+
+    <div class="container mt-5 p-3 shadow rounded" style="max-width: 600px;"> 
+        <h1 class="text-center">Compose an Email</h1>
+        <form action="{% url 'send_email' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ email_form.as_p }}
+        </div>
+         <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Send Email">
+        </div>
+    </form>
+    {% include 'alerts.html' %}
+    </div>
+
+{% endblock %}

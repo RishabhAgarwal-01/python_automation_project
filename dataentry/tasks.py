@@ -49,7 +49,7 @@ def export_data_task(model_name):
     # send email with the attachment
     mail_subject = 'Export Data Completed'
     message =  'Your data Export has been successful, please find the attached file'
-    to_email = settings.DEFAULT_TO_EMAIL
+    to_email = [settings.DEFAULT_TO_EMAIL]
     send_email_notification(mail_subject, message, to_email, attachment=file_path)
 
     return "Data exported Successfully"

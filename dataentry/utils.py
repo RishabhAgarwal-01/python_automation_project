@@ -1,3 +1,4 @@
+import logging
 from typing import List
 from django.apps import apps
 from django.core.management import CommandError
@@ -57,17 +58,33 @@ def check_csv_errors(file_path, model_name):
 
 
 
+# Optional: Set up a basic logger to record which emails failed
+logger = logging.getLogger(__name__)
 
-def send_email_notification(mail_subject, message, to_email, attachment=None):
-    try:
-        from_email =  settings.DEFAULT_FROM_EMAIL
-         # Create the email object and SEND it
-        email = EmailMessage(mail_subject, message, from_email, to=[to_email] )
-        if attachment is not None:
-            email.attach_file(attachment)
-        email.send()
-    except Exception as e:
-        raise e
+def send_email_notification(mail_subject, message, to_email_list, attachment=None):
+    from_email = settings.DEFAULT_FROM_EMAIL
+    
+    # Loop through the list so one bad email doesn't crash the whole batch
+    for email_address in to_email_list:
+        try:
+            # Send to one person at a time (fixes the privacy issue too!)
+            email = EmailMessage(
+                subject=mail_subject, 
+                body=message, 
+                from_email=from_email, 
+                to=[email_address] 
+            )
+            
+            if attachment is not None:
+                email.attach_file(attachment)
+                
+            email.send()
+            
+        except Exception as e:
+            # If this specific email fails, log it, but DON'T raise the error.
+            # This allows the loop to 'continue' to the next person.
+            logger.error(f"Failed to send email to {email_address}. Error: {str(e)}")
+            continue
 
 
 
